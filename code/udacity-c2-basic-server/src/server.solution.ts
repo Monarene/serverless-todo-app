@@ -100,8 +100,10 @@ import { Car, cars as cars_list } from './cars';
       return res.status(400).send(`id is required`);
     }
 
+    let newId: Number = parseInt(id); 
+
     // try to find the car by id
-    const car = cars.filter((car) => car.id == id);
+    const car = cars.filter((car) => car.id == newId);
 
     // respond not found, if we do not have this id
     if(car && car.length === 0) {
