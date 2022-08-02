@@ -36,6 +36,7 @@ import { Car, cars as cars_list } from './cars';
                 .send(`Welcome to the Cloud, ${name}!`);
   } );
 
+ 
   // Get a greeting to a specific person to demonstrate req.query
   // > try it {{host}}/persons?name=the_name
   app.get( "/persons/", ( req: Request, res: Response ) => {
@@ -70,13 +71,105 @@ import { Car, cars as cars_list } from './cars';
 
   // @TODO Add an endpoint to GET a list of cars
   // it should be filterable by make with a query paramater
+  app.get("/cars", (req: Request, res: Response) => {
 
+    let { id } = req.query;
+
+    if (!id ) {
+      return res.status(200).json({
+        results: cars.length, 
+          data: {
+            cars
+          }
+          }); 
+    }
+
+    let idInt: number = +id; 
+
+
+    cars.forEach( car => {
+      if ( car.id == idInt) {
+        return res.status(200).json({
+          results: 1, 
+            data: {
+              car
+            }
+            }); 
+      }
+    })
+
+  }); 
+
+  
   // @TODO Add an endpoint to get a specific car
   // it should require id
   // it should fail gracefully if no matching car is found
 
+  app.get( "/cars/:id", 
+  ( req: Request, res: Response ) => {
+    let { id } = req.params;
+
+    if ( !id ) {
+      return res.status(400)
+                .send(`name is required`);
+    }
+
+    let idInt: number = +id; 
+
+
+    cars.forEach( car => {
+      if ( car.id == idInt) {
+        return res.status(200).json({
+          results: 1, 
+            data: {
+              car
+            }
+            }); 
+      }
+    })
+} );
+
   /// @TODO Add an endpoint to post a new car to our list
   // it should require id, type, model, and cost
+
+  app.post( "/cars", 
+  async ( req: Request, res: Response ) => {
+
+    let { id, type, model, cost, make } = req.body;
+
+    if ( !id ) {
+      return res.status(400)
+                .send(`id is required`);
+    } else if (!type) {
+      return res.status(400)
+                .send(`Type is required`);
+    } else if (!model) {
+      return res.status(400)
+      .send(`Model is required`);
+    } else if (!cost) {
+      return res.status(400)
+                .send(`Cost is required`);
+    }else if (!make){
+      make = "not defined"
+    }
+
+    let newCar: Car = {
+      id: id, 
+      type: type, 
+      model: model, 
+      cost: cost, 
+      make: make
+    }; 
+
+    cars.push(newCar);
+
+    return res.status(200).json({
+      results: cars.length, 
+        data: {
+          cars
+        }
+        }); 
+} );
 
   // Start the Server
   app.listen( port, () => {
