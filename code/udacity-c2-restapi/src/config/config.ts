@@ -14,7 +14,7 @@ export const config = {
     "aws_media_bucket": process.env.POSTGRES_MEDIA_BUCKET
   },
   "jwt": {
-    "secret": " "
+    "secret": "helloworld"
   },
   "prod": {
     "username": "",
